@@ -1,4 +1,5 @@
-#!/usr/bin/python
+#!/usr/bin/python3
+
 import cv2
 import math
 import numpy
@@ -54,11 +55,13 @@ def callback(camera_info, image_msg):
 
 	theta = -math.atan2(up_vector[2], -up_vector[1])
 
-	print 'tilt_theta:%.5f height:%.5f' % (theta, camera_height)
+	# print 'tilt_theta:%.5f height:%.5f' % (theta, camera_height)
+	print('tilt_theta:%.5f height:%.5f' % (theta, camera_height))
 
 
 def main():
-	print '--- calibration_camera_pose_node ---'
+	# print '--- calibration_camera_pose_node ---'
+	print('--- calibration_camera_pose_node ---')
 	rospy.init_node('calibration_camera_pose_node')
 	subs = [
 		message_filters.Subscriber('/csi_cam_0/camera_info', CameraInfo),
