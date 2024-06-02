@@ -15,7 +15,8 @@
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/CameraInfo.h>
 #include <visualization_msgs/MarkerArray.h>
-#include <tfpose_ros/Persons.h>
+// #include <tfpose_ros/Persons.h>
+#include <lightweight_human_pose_estimation/KeyPoint2DArray.h>
 #include <monocular_people_tracking/TrackArray.h>
 
 #include <kkl/cvk/cvutils.hpp>
@@ -31,7 +32,8 @@ public:
   MonocularPeopleTrackingNode()
     : nh(),
       private_nh("~"),
-      poses_sub(nh.subscribe("/pose_estimator/pose", 10, &MonocularPeopleTrackingNode::poses_callback, this)),
+      // poses_sub(nh.subscribe("/pose_estimator/pose", 10, &MonocularPeopleTrackingNode::poses_callback, this)),
+      poses_sub(nh.subscribe("/human_pose_2d/pose_array", 10, &MonocularPeopleTrackingNode::poses_callback, this)),
       camera_info_sub(nh.subscribe("camera_info", 60, &MonocularPeopleTrackingNode::camera_info_callback, this)),
       tracks_pub(private_nh.advertise<monocular_people_tracking::TrackArray>("tracks", 10)),
       markers_pub(private_nh.advertise<visualization_msgs::MarkerArray>("markers", 10)),
@@ -49,7 +51,8 @@ private:
       this->camera_info_msg = camera_info_msg;
   }
 
-  void poses_callback(const tfpose_ros::PersonsConstPtr& poses_msg) {
+  // void poses_callback(const tfpose_ros::PersonsConstPtr& poses_msg) {
+  void poses_callback(const lightweight_human_pose_estimation::KeyPoint2DArrayConstPtr& poses_msg) {
       ROS_INFO("pose_callback");
       if(camera_info_msg == nullptr) {
           ROS_INFO("waiting for the camera info msg...");
@@ -58,26 +61,34 @@ private:
 
       // extract neck & ankles detections from pose msg
       std::vector<Observation::Ptr> observations;
-      observations.reserve(poses_msg->persons.size());
-      for(const auto& person : poses_msg->persons) {
+      // observations.reserve(poses_msg->persons.size());
+      observations.reserve(poses_msg->data.size());
+      // for(const auto& person : poses_msg->persons) {
+      for(const auto& person : poses_msg->data) {
         Joint neck, lankle, rankle;
-        for(const auto& joint: person.body_part) {
-            switch (joint.part_id) {
-            case 1:
-                neck = Joint(joint.confidence, joint.x * poses_msg->image_w, joint.y * poses_msg->image_h);
-                break;
-            case 13:
-                lankle = Joint(joint.confidence, joint.x * poses_msg->image_w, joint.y * poses_msg->image_h);
-                break;
-            case 10:
-                rankle = Joint(joint.confidence, joint.x * poses_msg->image_w, joint.y * poses_msg->image_h);
-                break;
-            }
-        }
+        // for(const auto& joint: person.body_part) {
+        //   switch (joint.part_id) {
+        //     case 1:
+        //         neck = Joint(joint.confidence, joint.x * poses_msg->image_w, joint.y * poses_msg->image_h);
+        //         break;
+        //     case 13:
+        //         lankle = Joint(joint.confidence, joint.x * poses_msg->image_w, joint.y * poses_msg->image_h);
+        //         break;
+        //     case 10:
+        //         rankle = Joint(joint.confidence, joint.x * poses_msg->image_w, joint.y * poses_msg->image_h);
+        //         break;
+        //   }
+        // }
+        neck   = Joint(person.confidence, person.neck.x, person.neck.y);
+        lankle = Joint(person.confidence, person.l_ank.x, person.l_ank.y);
+        rankle = Joint(person.confidence, person.r_ank.x, person.r_ank.y);
+
+        ROS_INFO("neck: %f, %f", neck.x, neck.y);
 
         auto observation = std::make_shared<Observation>(private_nh, neck, lankle, rankle, camera_info_msg, person);
         if(observation->is_valid()) {
           observations.push_back(observation);
+          // Check observations!
         }
       }
 
@@ -96,7 +107,8 @@ private:
 
       // publish visualization msgs
       if(image_pub.getNumSubscribers()) {
-        cv::Mat frame = cv::Mat(poses_msg->image_h, poses_msg->image_w, CV_8UC3, cv::Scalar::all(255));
+        // cv::Mat frame = cv::Mat(poses_msg->image_h, poses_msg->image_w, CV_8UC3, cv::Scalar::all(255));
+        cv::Mat frame = cv::Mat(camera_info_msg->height, camera_info_msg->width, CV_8UC3, cv::Scalar::all(255));
         cv_bridge::CvImage cv_image(poses_msg->header, "bgr8");
         cv_image.image = visualize(frame, observations);
         image_pub.publish(cv_image.toImageMsg());
