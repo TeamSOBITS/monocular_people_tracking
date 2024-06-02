@@ -10,5 +10,6 @@ float32[25] cov
 float32[4] expected_measurement_mean
 float32[16] expected_measurement_cov
 
-tfpose_ros/Person[] associated
+# tfpose_ros/Person[] associated
+lightweight_human_pose_estimation/KeyPoint2D[] associated
 geometry_msgs/Point32[] associated_neck_ankle
