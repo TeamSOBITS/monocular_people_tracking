@@ -1,7 +1,9 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.10.2)
 project(monocular_people_tracking)
 
-add_compile_options(-std=c++11)
+add_compile_options(-std=c++14)
+
+find_package(OpenCV 4.9.0 REQUIRED PATHS "/opt/opencv/opencv_4.9.0/")
 
 find_package(catkin REQUIRED COMPONENTS
   tf
@@ -9,7 +11,11 @@ find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   tf_conversions
   image_transport
-  tfpose_ros
+  # tfpose_ros
+  lightweight_human_pose_estimation
+  sensor_msgs
+  usb_cam
+  image_view
 )
 
 ########################
@@ -20,7 +26,13 @@ add_message_files(FILES
   TrackArray.msg
 )
 
-generate_messages(DEPENDENCIES std_msgs geometry_msgs tfpose_ros)
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+  geometry_msgs
+  # tfpose_ros
+  lightweight_human_pose_estimation
+)
 
 catkin_package(
 #  INCLUDE_DIRS include
