@@ -13,23 +13,18 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <build_depend>tf</build_depend>
-  <build_depend>rospy</build_depend>
-  <build_depend>roscpp</build_depend>
-  <build_depend>cv_bridge</build_depend>
-  <build_depend>tf_conversions</build_depend>
-  <build_depend>image_transport</build_depend>
-  <!-- <build_depend>tfpose_ros</build_depend> -->
-  <build_depend>lightweight_human_pose_estimation</build_depend>
-  <build_depend>sensor_msgs</build_depend>
-  <build_depend>usb_cam</build_depend>
-  <build_depend>image_view</build_depend>
-
-  <build_export_depend>rospy</build_export_depend>
-  <build_export_depend>roscpp</build_export_depend>
-
-  <exec_depend>rospy</exec_depend>
-  <exec_depend>roscpp</exec_depend>
+  <depend>roscpp</depend>
+  <depend>cv_bridge</depend>
+  <depend>tf</depend>
+  <depend>tf_conversions</depend>
+  <depend>image_transport</depend>
+  <!-- <depend>tfpose_ros</depend> -->
+  <depend>lightweight_human_pose_estimation</depend>
+  <depend>message_filters</depend>
+  <depend>sensor_msgs</depend>
+  <depend>visualization_msgs</depend>
+  <depend>usb_cam</depend>
+  <depend>image_view</depend>
 
   <export>
   </export>

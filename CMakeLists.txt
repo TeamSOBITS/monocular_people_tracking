@@ -6,14 +6,16 @@ add_compile_options(-std=c++14)
 find_package(OpenCV 4.9.0 REQUIRED PATHS "/opt/opencv/opencv_4.9.0/")
 
 find_package(catkin REQUIRED COMPONENTS
-  tf
   roscpp
   cv_bridge
+  tf
   tf_conversions
   image_transport
   # tfpose_ros
   lightweight_human_pose_estimation
+  message_filters
   sensor_msgs
+  visualization_msgs
   usb_cam
   image_view
 )
