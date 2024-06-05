@@ -84,6 +84,8 @@ private:
         rankle = Joint(person.confidence, person.r_ank.x, person.r_ank.y);
 
         ROS_INFO("neck: %f, %f", neck.x, neck.y);
+        ROS_INFO("lankle: %f, %f", lankle.x, lankle.y);
+        ROS_INFO("rankle: %f, %f", rankle.x, rankle.y);
 
         auto observation = std::make_shared<Observation>(private_nh, neck, lankle, rankle, camera_info_msg, person);
         if(observation->is_valid()) {
