@@ -2,7 +2,7 @@
 <launch>
   <arg name="camera_name" default="/csi_cam_0"/>
 
-  <node pkg="monocular_people_tracking" type="monocular_people_tracking_node" name="monocular_people_tracking">
+  <node pkg="monocular_people_tracking" type="monocular_people_tracking_node" name="monocular_people_tracking" output="screen">
     <remap from="camera_info" to="$(arg camera_name)/camera_info"/>
 
     <!-- detection parameters -->
