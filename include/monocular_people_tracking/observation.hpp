@@ -42,6 +42,12 @@ public:
   {
     const double confidence_thresh = private_nh.param<double>("detection_confidence_thresh", 0.3);
 
+    if(neck_.x < 0 || neck_.y < 0 || lankle.x < 0 || lankle.y < 0 || rankle.x < 0 || rankle.y < 0) {
+      neck = boost::none;
+      ankle = boost::none;
+      close2border = false;
+      return;
+    }
     if(neck_.confidence > confidence_thresh) {
       neck = Eigen::Vector2f(neck_.x, neck_.y);
     }
@@ -77,6 +83,7 @@ public:
 
   bool is_valid() const {
     return  static_cast<bool>(neck);
+    // return  static_cast<bool>(neck && ankle);
   }
 
   Eigen::Vector4f neck_ankle_vector() const {
